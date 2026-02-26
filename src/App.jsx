@@ -1,22 +1,27 @@
-import UserCard from "./components/UserCard.jsx";
 import UserList from "./components/UserList.jsx";
-import { ToDoList } from "./components/ToDoList.jsx";
 import UserToDoList from "./components/UserToDoList.jsx";
 import { useState } from "react";
+import { UserContext } from "./context/UserContext.jsx";
+import Navbar from "./components/Navbar.jsx";
+import { Route, Router, Routes } from "react-router";
 
 function App() {
-  const [currentUser, setCurrentUser] = useState("");
-
-  const assignUser = (name) => {
-    setCurrentUser(name);
-    console.log(name);
-  };
+  const [currentUser, setCurrentUser] = useState(null);
 
   return (
-    <>
-      <UserList currentUser={assignUser} />
-      {/*<UserToDoList />*/}
-    </>
+    <UserContext.Provider value={{ currentUser, setCurrentUser }}>
+      <Navbar></Navbar>
+      <div
+        className={
+          "flex flex-col gap-8 items-center justify-start h-screen pt-60 overflow-y-auto"
+        }
+      >
+        <Routes>
+          <Route path={`todos/:userId`} element={<UserToDoList />} />
+          <Route path={"/"} element={<UserList />} />
+        </Routes>
+      </div>
+    </UserContext.Provider>
   );
 }
 

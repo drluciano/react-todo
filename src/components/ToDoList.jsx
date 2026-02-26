@@ -1,6 +1,6 @@
 import { ToDoItem } from "./ToDoItem.jsx";
 
-export function ToDoList({ items, archiveTodo }) {
+export function ToDoList({ items, archiveTodo, handleStrike }) {
   if (items.length === 0) {
     return (
       <>
@@ -16,6 +16,7 @@ export function ToDoList({ items, archiveTodo }) {
               key={index}
               toDo={toDo}
               index={index}
+              handleStrike={handleStrike}
               archiveTodo={archiveTodo}
             ></ToDoItem>
           ))}
