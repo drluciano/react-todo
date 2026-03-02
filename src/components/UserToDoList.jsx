@@ -5,9 +5,11 @@ import { ToDoForm } from "./ToDoForm.jsx";
 import { ToDoList } from "./ToDoList.jsx";
 import { UserContext } from "../context/UserContext.jsx";
 import { useParams } from "react-router";
+import { ArchiveContext } from "../context/ArchiveContext.jsx";
 
 function UserToDoList() {
   const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { archive, setArchive } = useContext(ArchiveContext);
   const [todos, setTodos] = useState(null);
 
   const { userId } = useParams();
@@ -48,7 +50,11 @@ function UserToDoList() {
 
   const handleArchiveTodo = (index) => {
     const currentTodos = [...todos];
+    currentTodos[index].archivedBy = currentUser;
+    const newArchive = [...archive, currentTodos[index]];
+    setArchive(newArchive);
     currentTodos.splice(index, 1);
+    localStorage.setItem("archive", JSON.stringify(newArchive));
 
     setTodos(currentTodos);
     localStorage.setItem(

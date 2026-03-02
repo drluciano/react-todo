@@ -38,7 +38,7 @@ export function ToDoItem({ toDo, index, archiveTodo, handleStrike }) {
         >
           <Trash2 />
         </button>
-        <p
+        <div
           className={`toDoListItem px-2 py-2 wrap-normal flex flex-row justify-between w-full bg-gray-50 rounded-md text-left border border-gray-300 shadow-sm cursor-pointer hover:scale-105 transition duration-300 ease-in-out ${toDo.isStruck ? "line-through text-green-600 opacity-50" : "no-underline"}`}
           onClick={handleStriking}
         >
@@ -47,7 +47,7 @@ export function ToDoItem({ toDo, index, archiveTodo, handleStrike }) {
             <span className={"toDoText"}>{toDo.text}</span>
           </div>
           <span className={"text-gray-400"}>{checkUserIfHouseholdTodo()}</span>
-        </p>
+        </div>
       </div>
     </>
   );
