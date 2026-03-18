@@ -1,13 +1,14 @@
 import NewUserButton from "./NewUserButton.jsx";
 import UserCard from "./UserCard.jsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NewUserDialog from "./NewUserDialog.jsx";
+import { getUsers } from "../api/api.js";
 
 function UserList() {
   const localStorageKeys = JSON.parse(localStorage.getItem("users"));
 
   const [newUserDialog, setNewUserDialog] = useState(true);
-  const [users, setUsers] = useState(localStorageKeys ? localStorageKeys : []);
+  const [users, setUsers] = useState([]);
 
   const handleNewUser = (newUser) => {
     const userList = [...users, newUser];
@@ -15,6 +16,10 @@ function UserList() {
     localStorage.setItem("users", JSON.stringify(userList));
     setNewUserDialog(!newUserDialog);
   };
+
+  useEffect(() => {
+    getUsers().then((data) => setUsers(data));
+  }, []);
 
   return (
     <>
@@ -34,7 +39,7 @@ function UserList() {
           }
         >
           {users.map((user, index) => (
-            <UserCard name={user} key={index} />
+            <UserCard name={user.name} key={index} />
           ))}
         </div>
         <hr className={"border-gray-400 w-100 self-center"} />
