@@ -1,57 +1,56 @@
-import { CirclePlus } from "lucide-react";
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext.jsx";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { CirclePlus } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function ToDoForm({ onAdd }) {
   const { currentUser } = useContext(UserContext);
+  const [todoText, setTodoText] = useState("");
+  const [todoType, setTodoType] = useState("Personal");
 
-  const handleAddTodo = (event) => {
-    event.preventDefault();
-    const inputValue = event.target.elements.toDoInput.value;
-    const toDoType = event.target.elements.toDoType.value;
+  const handleAddTodo = (e) => {
+    e.preventDefault();
+    if (!todoText.trim()) return;
     onAdd({
-      type: toDoType,
-      text: inputValue,
+      type: todoType,
+      text: todoText,
       isStruck: false,
-      currentUser: currentUser,
+      currentUser,
       completedBy: null,
     });
-    event.target.reset();
+    setTodoText("");
+    setTodoType("Personal");
   };
 
   return (
-    <>
-      <form
-        onSubmit={handleAddTodo}
-        className={"flex flex-row gap-2 items-center justify-center w-full"}
-      >
-        <select
-          id={"toDoType"}
-          className={
-            "flex flex-row gap-1 items-center h-10.5 bg-gray-50 border border-gray-300 rounded-md px-4 shadow-sm hover:scale-105 transition duration-300 ease-in-out cursor-pointer"
-          }
-        >
-          <option>Personal</option>
-          <option>Household</option>
-        </select>
-        <input
-          type={"text"}
-          name={"toDoInput"}
-          id={"toDoInput"}
-          className={
-            "bg-gray-50 rounded-md h-10.5 text-black border border-gray-300 w-full shadow-sm hover:scale-105 transition duration-300 ease-in-out"
-          }
-        />
-        <button
-          type={"submit"}
-          className={
-            "flex flex-row gap-1 items-center h-10.5 bg-gray-50 border border-gray-300 rounded-md px-4 shadow-sm hover:scale-105 transition duration-300 ease-in-out cursor-pointer"
-          }
-        >
-          <CirclePlus size={18} />
-          <span>Add</span>
-        </button>
-      </form>
-    </>
+    <form onSubmit={handleAddTodo} className="flex flex-row gap-2 items-center">
+      <Select value={todoType} onValueChange={setTodoType}>
+        <SelectTrigger className="w-36">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="Personal">Personal</SelectItem>
+          <SelectItem value="Household">Household</SelectItem>
+        </SelectContent>
+      </Select>
+      <Input
+        type="text"
+        placeholder="Add a todo..."
+        value={todoText}
+        onChange={(e) => setTodoText(e.target.value)}
+        className="flex-1"
+      />
+      <Button type="submit">
+        <CirclePlus /> Add
+      </Button>
+    </form>
   );
 }

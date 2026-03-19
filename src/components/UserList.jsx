@@ -3,53 +3,39 @@ import UserCard from "./UserCard.jsx";
 import { useEffect, useState } from "react";
 import NewUserDialog from "./NewUserDialog.jsx";
 import { getUsers } from "../api/api.js";
+import { Separator } from "@/components/ui/separator";
 
 function UserList() {
-  const localStorageKeys = JSON.parse(localStorage.getItem("users"));
-
-  const [newUserDialog, setNewUserDialog] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [users, setUsers] = useState([]);
-
-  const handleNewUser = (newUser) => {
-    const userList = [...users, newUser];
-    setUsers(userList);
-    localStorage.setItem("users", JSON.stringify(userList));
-    setNewUserDialog(!newUserDialog);
-  };
 
   useEffect(() => {
     getUsers().then((data) => setUsers(data));
-  }, []);
+  }, [dialogOpen]);
 
   return (
-    <>
-      <div className={"flex flex-col gap-4  w-150 md:w-190 lg:w-250"}>
-        <div className={"flex flex-col gap-0 items-start pb-8"}>
-          <h1 className={"self-center text-3xl"}>
-            <span className={"font-bold"}>Welcome! </span>Please select a user,
-          </h1>
-          <h2 className={"self-center text-xl"}>
-            or create a new user to get started.
-          </h2>
-        </div>
-        {!newUserDialog ? <NewUserDialog handleSubmit={handleNewUser} /> : null}
-        <div
-          className={
-            "flex flex-row gap-4 max-w-250 flex-wrap items-center justify-center"
-          }
-        >
-          {users.map((user, index) => (
-            <UserCard name={user.name} key={index} />
-          ))}
-        </div>
-        <hr className={"border-gray-400 w-100 self-center"} />
-        <div className={"flex flex-row items-center justify-center"}>
-          <NewUserButton
-            toggleNewUserDialog={() => setNewUserDialog(!newUserDialog)}
-          />
-        </div>
+    <div className="flex flex-col gap-6 w-full max-w-2xl">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold">Welcome!</h1>
+        <p className="text-muted-foreground mt-1">
+          Please select a user, or create a new one to get started.
+        </p>
       </div>
-    </>
+      <div className="flex flex-row gap-4 flex-wrap items-center justify-center">
+        {users.map((user, index) => (
+          <UserCard name={user.name} key={index} />
+        ))}
+      </div>
+      <Separator />
+      <div className="flex justify-center">
+        <NewUserButton toggleNewUserDialog={() => setDialogOpen(true)} />
+      </div>
+      <NewUserDialog
+        open={dialogOpen}
+        setOpen={setDialogOpen}
+        onOpenChange={setDialogOpen}
+      />
+    </div>
   );
 }
 

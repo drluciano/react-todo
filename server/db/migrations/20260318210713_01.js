@@ -8,6 +8,7 @@ exports.up = function (knex) {
       table.increments("id").primary();
       table.string("email").notNullable().unique();
       table.string("name").notNullable();
+      table.string("pin").notNullable();
     })
     .createTable("Type", (table) => {
       table.increments("id").primary();

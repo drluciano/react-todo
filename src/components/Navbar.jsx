@@ -1,8 +1,10 @@
-import { Link, useNavigate } from "react-router";
-import { ArrowBigLeft, LogOut } from "lucide-react";
+import { useNavigate } from "react-router";
+import { LogOut } from "lucide-react";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext.jsx";
 import { PageContext } from "../context/PageContext.jsx";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export default function Navbar() {
   const { page, setPage } = useContext(PageContext);
@@ -10,74 +12,55 @@ export default function Navbar() {
   const userName = currentUser ? `${currentUser}'s` : "The";
   const navigate = useNavigate();
 
-  const logOutButton = () => {
-    if (currentUser)
-      return (
-        <>
-          <button
-            onClick={() => {
-              setCurrentUser(null);
-              setPage("todos");
-              navigate("/");
-            }}
-            className={
-              "bg-gray-100 hover:bg-green-900 hover:text-white border shadow-sm border-gray-400 px-4 items-center h-10.5 rounded-xl text-black hover:font-bold flex flex-row gap-2 transition-all ease-in-out cursor-pointer"
-            }
-          >
-            <LogOut></LogOut> Log Out
-          </button>
-        </>
-      );
-  };
-
-  const navLinks = () => {
-    if (currentUser)
-      return (
-        <>
-          <div className={"flex flex-row gap-2"}>
-            <p
-              onClick={() => {
-                navigate("todos/:userId");
-                setPage("todos");
-              }}
-              className={`hover:scale-110 transition-all ease-in-out cursor-pointer ${page === "todos" ? "font-bold" : page === "archive" ? "font-normal" : "font-normal"}`}
-            >
-              Todos
-            </p>
-            <p
-              onClick={() => {
-                navigate("archive");
-                setPage("archive");
-              }}
-              className={`hover:scale-110 transition-all ease-in-out cursor-pointer ${page === "archive" ? "font-bold" : page === "todos" ? "font-normal" : "font-normal"}`}
-            >
-              Archive
-            </p>
-          </div>
-        </>
-      );
-  };
-
   return (
-    <div
-      className={
-        "w-full text-black flex flex-row justify-between items-center px-4 border-b shadow-sm border-gray-300 bg-linear-to-t from-green-100 to-white h-22.5 fixed"
-      }
-    >
-      <h1
-        className={
-          "font-bold text-xl hover:scale-110 cursor-pointer transition-all ease-in-out"
-        }
-        onClick={() => {
-          navigate("/");
-          setCurrentUser(null);
-          setPage("todos");
-        }}
-      >
-        {userName} To-Do List
-      </h1>
-      {navLinks()}
-      {logOutButton()}
-    </div>
+    <header className="w-full border-b bg-background fixed top-0 z-50">
+      <div className="flex h-14 items-center justify-between px-6">
+        <h1
+          className="font-bold text-xl cursor-pointer"
+          onClick={() => {
+            navigate("/");
+            setCurrentUser(null);
+            setPage("todos");
+          }}
+        >
+          {userName} To-Do List
+        </h1>
+        {currentUser && (
+          <div className="flex items-center gap-3">
+            <nav className="flex items-center gap-1">
+              <Button
+                variant={page === "todos" ? "default" : "ghost"}
+                onClick={() => {
+                  navigate(`todos/${currentUser}`);
+                  setPage("todos");
+                }}
+              >
+                Todos
+              </Button>
+              <Button
+                variant={page === "archive" ? "default" : "ghost"}
+                onClick={() => {
+                  navigate("archive");
+                  setPage("archive");
+                }}
+              >
+                Archive
+              </Button>
+            </nav>
+            <Separator orientation="vertical" className="h-6" />
+            <Button
+              variant="outline"
+              onClick={() => {
+                setCurrentUser(null);
+                setPage("todos");
+                navigate("/");
+              }}
+            >
+              <LogOut /> Log Out
+            </Button>
+          </div>
+        )}
+      </div>
+    </header>
   );
 }

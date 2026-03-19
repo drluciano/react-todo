@@ -1,46 +1,68 @@
-import { CirclePlus } from "lucide-react";
 import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { newUser } from "@/api/api.js";
 
-function NewUserDialog({ handleSubmit }) {
-  const [inputText, setInputText] = useState("");
-  const handleNewUser = (e) => {
+function NewUserDialog({ open, setOpen, onOpenChange }) {
+  const [inputName, setInputName] = useState("");
+  const [inputEmail, setInputEmail] = useState("");
+  const [inputPin, setInputPin] = useState("");
+
+  const handleNewUser = async (e) => {
     e.preventDefault();
-    handleSubmit(inputText);
-    e.currentTarget.previousElementSibling.value = "";
+    await newUser(inputName, inputEmail, inputPin);
+    setInputName("");
+    setInputEmail("");
+    setOpen(false);
   };
 
   return (
-    <>
-      <div className={"flex flex-col gap-4 items-center"}>
-        <h1 className={"text-3xl uppercase font-bold"}>New User</h1>
-        <form
-          className={"flex flex-col gap-2 items-center justify-center w-full"}
-          onSubmit={handleNewUser}
-        >
-          <input
-            type={"text"}
-            name={"userName"}
-            id={"userName"}
-            placeholder={"Enter a name"}
-            onChange={(e) => {
-              setInputText(e.target.value);
-            }}
-            className={
-              "bg-gray-50 rounded-md h-10.5 text-black border border-gray-300 w-full shadow-sm hover:scale-105 transition duration-300 ease-in-out px-3"
-            }
-          />
-          <button
-            type={"submit"}
-            className={
-              "flex flex-row gap-1 items-center h-10.5 bg-gray-50 border border-gray-300 rounded-md px-4 shadow-sm hover:scale-105 transition duration-300 ease-in-out cursor-pointer"
-            }
-          >
-            <CirclePlus size={18} />
-            Create User
-          </button>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create New User</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleNewUser} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="userName">Name</Label>
+            <Input
+              id="userName"
+              placeholder="Enter a name"
+              value={inputName}
+              onChange={(e) => setInputName(e.target.value)}
+            />
+            <Label htmlFor="userName">Email</Label>
+            <Input
+              id="email"
+              placeholder={"Enter your email"}
+              value={inputEmail}
+              onChange={(e) => {
+                setInputEmail(e.target.value);
+              }}
+            />
+            <Label htmlFor="userName">Input desired PIN</Label>
+            <Input
+              maxLength={4}
+              type={"password"}
+              onChange={(e) => setInputPin(e.target.value)}
+            />
+            <Label htmlFor="userName">Verify desired PIN</Label>
+            <Input maxLength={4} type={"password"} />
+          </div>
+          <DialogFooter>
+            <Button type="submit">Create User</Button>
+          </DialogFooter>
         </form>
-      </div>
-    </>
+      </DialogContent>
+    </Dialog>
   );
 }
 
