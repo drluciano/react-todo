@@ -9,6 +9,7 @@ exports.up = function (knex) {
       table.string("email").notNullable().unique();
       table.string("name").notNullable();
       table.string("pin").notNullable();
+      table.string("avatarSeed").notNullable();
     })
     .createTable("Type", (table) => {
       table.increments("id").primary();
@@ -30,11 +31,7 @@ exports.up = function (knex) {
         .references("id")
         .inTable("Subtype");
       table.boolean("completed").notNullable();
-      table
-        .integer("completedById")
-        .notNullable()
-        .references("id")
-        .inTable("User");
+      table.integer("completedById").references("id").inTable("User");
       table.timestamp("lastUpdated").defaultTo(knex.fn.now());
       table.boolean("archived").notNullable();
     })

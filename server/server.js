@@ -20,16 +20,56 @@ app.get("/users", async (req, res) => {
 });
 
 app.post("/users", async (req, res) => {
-  const { name, email, pin } = req.body;
+  const { name, email, pin, avatarSeed } = req.body;
 
   const hashedPassword = await bcrypt.hash(pin, 12);
 
   const [newUser] = await knex("User")
-    .insert({ name, email, pin: hashedPassword })
+    .insert({ name, email, pin: hashedPassword, avatarSeed })
     .returning("*");
   res.status(201).json(newUser);
 });
 
-app.get("/users/:userId", (req, res) => {
-  const { id, name, email, pin } = res.body;
+app.get("/tasks", async (req, res) => {
+  const { id } = req.query;
+  const tasks = await knex("Task").where({ userId: id }).select("*");
+  res.json(tasks);
+});
+
+app.get("/types", async (req, res) => {
+  const types = await knex("Type").select("*");
+  res.json(types);
+});
+
+app.get("/subtypes", async (req, res) => {
+  const subtypes = await knex("Subtype").select("*");
+  res.json(subtypes);
+});
+
+app.post("/tasks", async (req, res) => {
+  const {
+    task,
+    userId,
+    typeId,
+    subtypeId,
+    completed,
+    completedById,
+    lastUpdated,
+    archived,
+  } = req.body;
+
+  const [newTask] = await knex("Task")
+    .insert({
+      task,
+      userId,
+      typeId,
+      subtypeId,
+      completed,
+      completedById,
+      lastUpdated,
+      archived,
+    })
+    .returning("*");
+
+  res.status(201).json(newTask);
 });

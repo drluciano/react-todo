@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 export default function Navbar() {
   const { page, setPage } = useContext(PageContext);
   const { currentUser, setCurrentUser } = useContext(UserContext);
-  const userName = currentUser ? `${currentUser}'s` : "The";
+  const userName = currentUser ? `${currentUser.name}'s` : "The";
   const navigate = useNavigate();
 
   return (
@@ -18,8 +18,8 @@ export default function Navbar() {
         <h1
           className="font-bold text-xl cursor-pointer"
           onClick={() => {
-            navigate("/");
-            setCurrentUser(null);
+            if (!currentUser) return;
+            navigate(`todos/${currentUser.name}`);
             setPage("todos");
           }}
         >
@@ -31,7 +31,7 @@ export default function Navbar() {
               <Button
                 variant={page === "todos" ? "default" : "ghost"}
                 onClick={() => {
-                  navigate(`todos/${currentUser}`);
+                  navigate(`todos/${currentUser.name}`);
                   setPage("todos");
                 }}
               >

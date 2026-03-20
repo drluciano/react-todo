@@ -1,6 +1,6 @@
 import UserList from "./components/UserList.jsx";
 import UserToDoList from "./components/UserToDoList.jsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserContext } from "./context/UserContext.jsx";
 import Navbar from "./components/Navbar.jsx";
 import { Route, Routes } from "react-router";
@@ -9,10 +9,20 @@ import ArchivePage from "./components/ArchivePage.jsx";
 import { ArchiveContext } from "./context/ArchiveContext.jsx";
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(
+    JSON.parse(localStorage.getItem("currentUser")),
+  );
   const [page, setPage] = useState("todos");
   const currentArchive = JSON.parse(localStorage.getItem("archive")) ?? [];
   const [archive, setArchive] = useState(currentArchive);
+
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem("currentUser");
+    }
+  }, [currentUser]);
 
   return (
     <UserContext.Provider value={{ currentUser, setCurrentUser }}>

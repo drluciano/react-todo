@@ -23,7 +23,7 @@ function UserList() {
       </div>
       <div className="flex flex-row gap-4 flex-wrap items-center justify-center">
         {users.map((user, index) => (
-          <UserCard name={user.name} key={index} />
+          <UserCard user={user} key={index} />
         ))}
       </div>
       <Separator />
